@@ -3,6 +3,7 @@ const transactionContainer = document.getElementById("transactionContainer");
 const searchInput = document.getElementById("searchInput");
 const themeToggle = document.getElementById("themeToggle");
 const filterButtons = document.querySelectorAll(".filter-btn");
+const resetBtn = document.getElementById("resetBtn");
 
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 let currentFilter = "All";
@@ -130,4 +131,16 @@ themeToggle.addEventListener("click", () => {
         themeToggle.textContent = "🌙";
     }
 });
+
+resetBtn.addEventListener("click", () => {
+    const confirmReset = confirm(
+        "Are you sure you want to delete all transactions?"
+    );
+    if (confirmReset) {
+        transactions = [];
+        saveTransactions();
+        renderTransactions();
+    }
+});
+
 renderTransactions();
