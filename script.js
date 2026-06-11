@@ -8,7 +8,16 @@ const resetBtn = document.getElementById("resetBtn");
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 let currentFilter = "All";
 
-document.getElementById("date").value = new Date().toISOString().split("T")[0];
+function setCurrentDate() {
+    const dateInput = document.getElementById("date");
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    dateInput.value = `${year}-${month}-${day}`;
+}
+setCurrentDate();
 
 function saveTransactions() {
     localStorage.setItem(
@@ -115,7 +124,7 @@ financeForm.addEventListener("submit", event => {
     renderTransactions();
     financeForm.reset();
 
-    document.getElementById("date").value = new Date().toISOString().split("T")[0];
+    setCurrentDate();
 });
 
 searchInput.addEventListener(
@@ -143,7 +152,19 @@ themeToggle.addEventListener("click", () => {
     } else {
         themeToggle.textContent = "🌙";
     }
+    localStorage.setItem(
+        "theme",
+        document.body.classList.contains("dark") ?
+        "dark" :
+        "light"
+    );
 });
+
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+    document.body.classList.add("dark");
+    themeToggle.textContent = "☀️";
+}
 
 resetBtn.addEventListener("click", () => {
     const confirmReset = confirm(
