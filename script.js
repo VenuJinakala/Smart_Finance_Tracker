@@ -8,6 +8,8 @@ const resetBtn = document.getElementById("resetBtn");
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 let currentFilter = "All";
 
+document.getElementById("date").value = new Date().toISOString().split("T")[0];
+
 function saveTransactions() {
     localStorage.setItem(
         "transactions",
@@ -35,8 +37,10 @@ function renderTransactions() {
     transactionContainer.innerHTML = "";
     const searchValue = searchInput.value.toLowerCase();
     const filteredTransactions = transactions.filter(transaction => {
-        const title = transaction.title || "";
-        const matchesSearch = title.toLowerCase().includes(searchValue);
+        const title = transaction.title.toLowerCase();
+        const date = transaction.date || "";
+        const category = transaction.category.toLowerCase();
+        const matchesSearch = title.includes(searchValue) || date.includes(searchValue) || category.includes(searchValue);
         const matchesFilter = currentFilter === "All" || transaction.type === currentFilter;
 
         return matchesSearch && matchesFilter;
@@ -56,6 +60,10 @@ function renderTransactions() {
       <p>
         <strong>Amount:</strong>
         ₹${transaction.amount}
+      </p>
+      <p>
+        <strong>Date:</strong>
+        ${transaction.date}
       </p>
       <p>
         <strong>Type:</strong>
@@ -90,11 +98,14 @@ financeForm.addEventListener("submit", event => {
 
     const title = document.getElementById("title").value;
     const amount = document.getElementById("amount").value;
+    const date = document.getElementById("date").value;
     const type = document.getElementById("type").value;
     const category = document.getElementById("category").value;
     const newTransaction = {
+        id: Date.now(),
         title,
         amount,
+        date,
         type,
         category
     };
@@ -103,6 +114,8 @@ financeForm.addEventListener("submit", event => {
     saveTransactions();
     renderTransactions();
     financeForm.reset();
+
+    document.getElementById("date").value = new Date().toISOString().split("T")[0];
 });
 
 searchInput.addEventListener(
